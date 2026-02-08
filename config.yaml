@@ -1,0 +1,163 @@
+# http2cli configuration for Tesseract OCR
+# Exposes tesseract functionality via HTTP API
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: 30s
+  write_timeout: 300s
+  max_upload_size: 50MB
+
+security:
+  # API key for X-API-Key header authentication (empty = disabled)
+  api_key: ""
+  # Only tesseract command can be executed
+  allowed_commands:
+    - /usr/bin/tesseract
+  # Default timeout for command execution
+  command_timeout: 300s
+  # Maximum concurrent command executions
+  max_concurrent_commands: 5
+
+tools:
+  # OCR image to text - basic usage
+  - name: ocr
+    description: "Extract text from image using Tesseract OCR"
+    endpoint: /ocr
+    method: POST
+    command: /usr/bin/tesseract
+    input:
+      type: file
+      form_field: image
+      required: true
+    output:
+      type: stdout
+      content_type: text/plain
+    arguments:
+      static:
+        - "{{input_file}}"
+        - "stdout"
+      mapped:
+        - name: lang
+          flag: "-l"
+          source: query
+          type: string
+          default: "eng"
+          description: "Language code (e.g., eng, deu, fra, spa, chi_sim)"
+        - name: psm
+          flag: "--psm"
+          source: query
+          type: string
+          default: "3"
+          description: "Page segmentation mode (0-13)"
+        - name: oem
+          flag: "--oem"
+          source: query
+          type: string
+          default: "3"
+          description: "OCR Engine mode (0-3)"
+
+  # OCR with hOCR output format
+  - name: ocr-hocr
+    description: "Extract text from image in hOCR format"
+    endpoint: /ocr/hocr
+    method: POST
+    command: /usr/bin/tesseract
+    input:
+      type: file
+      form_field: image
+      required: true
+    output:
+      type: stdout
+      content_type: text/html
+    arguments:
+      static:
+        - "{{input_file}}"
+        - "stdout"
+        - "hocr"
+      mapped:
+        - name: lang
+          flag: "-l"
+          source: query
+          type: string
+          default: "eng"
+
+  # OCR with TSV output format (includes bounding boxes)
+  - name: ocr-tsv
+    description: "Extract text from image with bounding box data in TSV format"
+    endpoint: /ocr/tsv
+    method: POST
+    command: /usr/bin/tesseract
+    input:
+      type: file
+      form_field: image
+      required: true
+    output:
+      type: stdout
+      content_type: text/tab-separated-values
+    arguments:
+      static:
+        - "{{input_file}}"
+        - "stdout"
+        - "tsv"
+      mapped:
+        - name: lang
+          flag: "-l"
+          source: query
+          type: string
+          default: "eng"
+
+  # OCR with ALTO XML output format
+  - name: ocr-alto
+    description: "Extract text from image in ALTO XML format"
+    endpoint: /ocr/alto
+    method: POST
+    command: /usr/bin/tesseract
+    input:
+      type: file
+      form_field: image
+      required: true
+    output:
+      type: stdout
+      content_type: application/xml
+    arguments:
+      static:
+        - "{{input_file}}"
+        - "stdout"
+        - "alto"
+      mapped:
+        - name: lang
+          flag: "-l"
+          source: query
+          type: string
+          default: "eng"
+
+  # Get tesseract version
+  - name: version
+    description: "Get Tesseract version information"
+    endpoint: /version
+    method: GET
+    command: /usr/bin/tesseract
+    input:
+      type: none
+    output:
+      type: stdout
+      content_type: text/plain
+    arguments:
+      static:
+        - "--version"
+
+  # Health check endpoint
+  - name: health
+    description: "Health check endpoint"
+    endpoint: /health
+    method: GET
+    command: /usr/bin/tesseract
+    input:
+      type: none
+    output:
+      type: stdout
+      content_type: text/plain
+    arguments:
+      static:
+        - "--version"

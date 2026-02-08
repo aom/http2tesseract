@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  tesseract-api:
+    build:
+      context: .
+      args:
+        OS: linux
+        ARCH: amd64
+        HTTP2CLI_VERSION: v0.0.3
+    image: http2tesseract:latest
+    container_name: tesseract-api
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # Uncomment to use custom configuration
+    # volumes:
+    #   - ./config.yaml:/etc/http2cli/config.yaml:ro
