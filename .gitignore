@@ -1,0 +1,24 @@
+# Docker
+*.log
+
+# Build artifacts
+*.exe
+
+# Test files
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.pdf
+test-images/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
