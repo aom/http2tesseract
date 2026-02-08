@@ -5,7 +5,6 @@ services:
     build:
       context: .
       args:
-        OS: linux
         ARCH: amd64
         HTTP2CLI_VERSION: v0.0.3
     image: http2tesseract:latest

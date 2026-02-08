@@ -8,7 +8,7 @@ A Docker image that exposes Tesseract OCR functionality via HTTP API using [http
 - 🌍 **Multi-language support** - Includes 15+ languages (English, German, French, Spanish, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, Hindi, and more)
 - 🔧 **Multiple output formats** - Plain text, hOCR, TSV, ALTO XML
 - 🚀 **HTTP API** - RESTful interface for OCR operations
-- 🏗️ **Multi-architecture** - Supports linux/amd64, linux/arm64, darwin/arm64
+- 🏗️ **Multi-architecture** - Supports linux/amd64, linux/arm64
 - 📦 **Lightweight** - Built on Debian Slim for optimal size and compatibility
 
 ## Quick Start
@@ -22,14 +22,11 @@ docker build -t http2tesseract:latest .
 
 Build for specific architecture:
 ```bash
-# For linux/amd64
-docker build --build-arg OS=linux --build-arg ARCH=amd64 -t http2tesseract:linux-amd64 .
+# For linux/amd64 (default)
+docker build --build-arg ARCH=amd64 -t http2tesseract:linux-amd64 .
 
 # For linux/arm64
-docker build --build-arg OS=linux --build-arg ARCH=arm64 -t http2tesseract:linux-arm64 .
-
-# For darwin/arm64 (macOS Apple Silicon)
-docker build --build-arg OS=darwin --build-arg ARCH=arm64 -t http2tesseract:darwin-arm64 .
+docker build --build-arg ARCH=arm64 -t http2tesseract:linux-arm64 .
 ```
 
 ### Run the Container
@@ -185,16 +182,15 @@ docker run -d -p 8080:8080 \
 
 The Dockerfile supports the following build arguments:
 
-- `OS`: Operating system (default: `linux`)
-  - Options: `linux`, `darwin`, `windows`
 - `ARCH`: Architecture (default: `amd64`)
   - Options: `amd64`, `arm64`
 - `HTTP2CLI_VERSION`: http2cli version to install (default: `v0.0.3`)
 
+**Note**: Container OS is always Linux (Debian Slim), regardless of build arguments.
+
 **Example:**
 ```bash
 docker build \
-  --build-arg OS=linux \
   --build-arg ARCH=arm64 \
   --build-arg HTTP2CLI_VERSION=v0.0.3 \
   -t http2tesseract:arm64 .
