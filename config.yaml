@@ -146,18 +146,3 @@ tools:
     arguments:
       static:
         - "--version"
-
-  # Health check endpoint
-  - name: health
-    description: "Health check endpoint"
-    endpoint: /health
-    method: GET
-    command: /usr/bin/tesseract
-    input:
-      type: none
-    output:
-      type: stdout
-      content_type: text/plain
-    arguments:
-      static:
-        - "--version"
